@@ -62,22 +62,17 @@ export default async function handler(req, res) {
     }
     */
 
-    // --- OPCJA 2: Telegram Bot ---
-    // Odkomentuj i ustaw TELEGRAM_BOT_TOKEN i TELEGRAM_CHAT_ID
-    /*
-    if (process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID) {
-      const text = `🏠 *Nowy lead!*\n\n👤 ${lead.name}\n📞 ${lead.phone}\n🕐 ${lead.timestamp}`;
-      await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chat_id: process.env.TELEGRAM_CHAT_ID,
-          text,
-          parse_mode: 'Markdown',
-        }),
-      });
-    }
-    */
+    // Telegram Bot — powiadomienie o nowym leadzie
+    const tgText = `🏠 *Nowy lead!*\n\n👤 ${lead.name}\n📞 ${lead.phone}\n🕐 ${lead.timestamp}`;
+    await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: process.env.TELEGRAM_CHAT_ID,
+        text: tgText,
+        parse_mode: 'Markdown',
+      }),
+    });
 
     return res.status(200).json({ success: true, message: 'Dziękujemy! Odezwiemy się wkrótce.' });
   } catch (error) {
