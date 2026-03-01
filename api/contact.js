@@ -63,7 +63,8 @@ export default async function handler(req, res) {
     */
 
     // Telegram Bot — powiadomienie o nowym leadzie
-    const tgText = `🏠 *Nowy lead!*\n\n👤 ${lead.name}\n📞 ${lead.phone}\n🕐 ${lead.timestamp}`;
+    const date = new Date(lead.timestamp).toLocaleDateString('pl-PL', { day: 'numeric', month: 'long', year: 'numeric' });
+    const tgText = `${date} — nowy lead!\n\n${lead.name}\n${lead.phone}`;
     await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
