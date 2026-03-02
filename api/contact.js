@@ -1,8 +1,66 @@
 // Vercel Serverless Function — obsługa formularza kontaktowego
 // Zgłoszenia są logowane w Vercel Logs (vercel.com → projekt → Logs)
-// Możesz dodać powiadomienia email/Telegram poniżej.
 
-const LEADS_STORE = [];
+import { createHash } from 'crypto';
+
+const PIXEL_ID = '1985636369008402';
+
+function sha256(value) {
+  if (!value) return null;
+  return createHash('sha256').update(value.trim().toLowerCase()).digest('hex');
+}
+
+function normalizePhone(phone) {
+  // Remove spaces, dashes; ensure starts with country code
+  let clean = phone.replace(/[\s\-\(\)]/g, '');
+  if (clean.startsWith('0')) clean = '48' + clean.slice(1);
+  if (!clean.startsWith('+') && !clean.startsWith('48')) clean = '48' + clean;
+  clean = clean.replace('+', '');
+  return clean;
+}
+
+async function sendCAPI({ name, phone, eventId, fbc, fbp, userAgent, ip, sourceUrl }) {
+  const token = process.env.META_CAPI_TOKEN;
+  if (!token) {
+    console.log('META_CAPI_TOKEN not set, skipping CAPI');
+    return;
+  }
+
+  const userData = {
+    ph: [sha256(normalizePhone(phone))],
+    fn: [sha256(name)],
+    client_user_agent: userAgent,
+    client_ip_address: ip,
+  };
+  if (fbc) userData.fbc = fbc;
+  if (fbp) userData.fbp = fbp;
+
+  const payload = {
+    data: [{
+      event_name: 'Contact',
+      event_time: Math.floor(Date.now() / 1000),
+      event_id: eventId,
+      action_source: 'website',
+      event_source_url: sourceUrl || 'https://brzegowa.vercel.app',
+      user_data: userData,
+    }],
+  };
+
+  try {
+    const res = await fetch(
+      `https://graph.facebook.com/v21.0/${PIXEL_ID}/events?access_token=${token}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      }
+    );
+    const result = await res.json();
+    console.log('CAPI response:', JSON.stringify(result));
+  } catch (err) {
+    console.error('CAPI error:', err);
+  }
+}
 
 export default async function handler(req, res) {
   // CORS
@@ -19,7 +77,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { name, phone, timestamp, source, token } = req.body;
+    const { name, phone, timestamp, source, token, event_id, fbc, fbp } = req.body;
 
     // Turnstile verification (soft-fail: log but don't block real leads)
     let turnstileOk = false;
@@ -60,26 +118,6 @@ export default async function handler(req, res) {
     console.log(JSON.stringify(lead, null, 2));
     console.log('=================');
 
-    // --- OPCJA 1: Powiadomienie email przez Resend ---
-    // Odkomentuj i ustaw RESEND_API_KEY w zmiennych środowiskowych Vercel
-    /*
-    if (process.env.RESEND_API_KEY) {
-      await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          from: 'Landing <onboarding@resend.dev>',
-          to: ['twoj@email.pl'],
-          subject: `Nowy lead: ${lead.name} — ${lead.phone}`,
-          text: `Imię: ${lead.name}\nTelefon: ${lead.phone}\nCzas: ${lead.timestamp}\nŹródło: ${lead.source}`,
-        }),
-      });
-    }
-    */
-
     // Telegram Bot — powiadomienie o nowym leadzie
     const date = new Date(lead.timestamp).toLocaleDateString('pl-PL', { day: 'numeric', month: 'long', year: 'numeric' });
     const badge = turnstileOk ? '' : ' [!]';
@@ -92,6 +130,18 @@ export default async function handler(req, res) {
         text: tgText,
         parse_mode: 'Markdown',
       }),
+    });
+
+    // Meta Conversions API — server-side event
+    sendCAPI({
+      name: lead.name,
+      phone: lead.phone,
+      eventId: event_id,
+      fbc,
+      fbp,
+      userAgent: req.headers['user-agent'],
+      ip: req.headers['x-forwarded-for']?.split(',')[0] || req.socket?.remoteAddress,
+      sourceUrl: req.headers['referer'],
     });
 
     return res.status(200).json({ success: true, message: 'Dziękujemy! Odezwiemy się wkrótce.' });

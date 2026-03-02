@@ -14,18 +14,20 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-  <!-- Facebook Pixel — wstaw swój pixel ID -->
-  <!--
+  <!-- Meta Pixel Code -->
   <script>
     !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
     n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
     n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
     t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
     document,'script','https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', 'TWOJ_PIXEL_ID');
+    fbq('init', '1985636369008402');
     fbq('track', 'PageView');
   </script>
-  -->
+  <noscript><img height="1" width="1" style="display:none"
+  src="https://www.facebook.com/tr?id=1985636369008402&ev=PageView&noscript=1"
+  /></noscript>
+  <!-- End Meta Pixel Code -->
   <style>
     *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
     :root{
@@ -67,6 +69,8 @@
     .form-submit:hover{background:#16a34a}
     .form-submit small{display:block;font-size:12px;font-weight:500;opacity:.85;letter-spacing:0;margin-top:2px}
     .form-submit:disabled{opacity:.6;cursor:not-allowed}
+    .form-consent{display:flex;align-items:start;gap:8px;font-size:11px;color:rgba(255,255,255,.45);margin-top:10px;line-height:1.4;cursor:pointer}
+    .form-consent input[type="checkbox"]{width:16px;height:16px;flex-shrink:0;margin-top:1px;accent-color:var(--gold);cursor:pointer}
     .form-note{display:flex;align-items:start;gap:6px;font-size:11px;color:rgba(255,255,255,.35);margin-top:12px;line-height:1.4}
     .form-note svg{width:14px;height:14px;flex-shrink:0;margin-top:1px;color:rgba(255,255,255,.35)}
 
@@ -197,6 +201,10 @@
             <label for="phone">Telefon</label>
             <input type="tel" id="phone" name="phone" placeholder="np. 600 123 456" required inputmode="tel" autocomplete="tel">
           </div>
+          <label class="form-consent">
+            <input type="checkbox" name="consent" required>
+            <span>Wyrażam zgodę na przetwarzanie moich danych osobowych w celu kontaktu w sprawie tej nieruchomości.</span>
+          </label>
           <div class="cf-turnstile" data-sitekey="0x4AAAAAACk6lS6MnM8bGloi" data-theme="dark" data-size="compact"></div>
           <button type="submit" class="form-submit" id="submitBtn">Zostaw telefon<small>Oddzwonimy w kilka godzin</small></button>
           <div class="form-note">
@@ -281,6 +289,10 @@
             <input type="text" name="name" placeholder="Twoje imię" required autocomplete="given-name">
             <input type="tel" name="phone" placeholder="Numer telefonu" required inputmode="tel" autocomplete="tel">
           </div>
+          <label class="form-consent">
+            <input type="checkbox" name="consent" required>
+            <span>Wyrażam zgodę na przetwarzanie moich danych osobowych w celu kontaktu w sprawie tej nieruchomości.</span>
+          </label>
           <div class="cf-turnstile" data-sitekey="0x4AAAAAACk6lS6MnM8bGloi" data-theme="dark" data-size="compact"></div>
           <button type="submit" class="form-submit" id="submitBtnFinal">Zostaw telefon<small>Oddzwonimy w kilka godzin</small></button>
           <div class="form-note">
@@ -347,24 +359,28 @@
     stickyCta.style.transition='transform .3s ease';
 
     // Form handler
+    function getCookie(n){return(document.cookie.match('(^|; )'+n+'=([^;]*)')||[])[2]||''}
+
     async function handleSubmit(e,formId){
       e.preventDefault();
       const form=e.target;
       const btn=form.querySelector('.form-submit');
-      const card=form.closest('.form-card, .final-form');
-      const successEl=card.querySelector('.form-success');
 
       btn.disabled=true;
       btn.textContent='Wysyłanie...';
 
-      const inputs=form.querySelectorAll('input');
+      const inputs=form.querySelectorAll('input[type="text"],input[type="tel"]');
       const token=form.querySelector('[name="cf-turnstile-response"]')?.value;
+      const eventId='evt_'+Date.now()+'_'+Math.random().toString(36).slice(2,9);
       const data={
         name:(inputs[0]?.value||'').trim(),
         phone:(inputs[1]?.value||'').trim(),
         timestamp:new Date().toISOString(),
         source:'landing-fb',
-        token
+        token,
+        event_id:eventId,
+        fbc:getCookie('_fbc'),
+        fbp:getCookie('_fbp')
       };
 
       try{
@@ -374,10 +390,8 @@
           body:JSON.stringify(data)
         });
         if(res.ok){
-          form.style.display='none';
-          successEl.classList.add('show');
-          if(window.turnstile)turnstile.reset();
-          // fbq('track','Lead');
+          sessionStorage.setItem('fb_event_id',eventId);
+          window.location.href='/sukces';
         }else throw new Error();
       }catch{
         btn.disabled=false;

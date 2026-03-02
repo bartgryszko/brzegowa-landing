@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dziękujemy! | Dom w Łomiankach</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <!-- Meta Pixel Code -->
+  <script>
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+    document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1985636369008402');
+    fbq('track', 'PageView');
+    // Konwersja Contact — odpala się po przekierowaniu z formularza
+    var eid = sessionStorage.getItem('fb_event_id');
+    if (eid) {
+      fbq('track', 'Contact', {}, {eventID: eid});
+      sessionStorage.removeItem('fb_event_id');
+    } else {
+      fbq('track', 'Contact');
+    }
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+  src="https://www.facebook.com/tr?id=1985636369008402&ev=PageView&noscript=1"
+  /></noscript>
+  <!-- End Meta Pixel Code -->
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    :root{--navy:#16213e;--gold:#c9a96e;--white:#ffffff}
+    body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--white);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center}
+    .card{max-width:440px;width:100%}
+    .check{width:72px;height:72px;background:#22c55e;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px}
+    .check svg{width:36px;height:36px;color:var(--white)}
+    h1{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;margin-bottom:12px}
+    p{font-size:16px;color:rgba(255,255,255,.7);line-height:1.5;margin-bottom:24px}
+    .back-link{display:inline-block;color:var(--gold);text-decoration:none;font-size:14px;font-weight:500;border-bottom:1px solid transparent;transition:border-color .2s}
+    .back-link:hover{border-bottom-color:var(--gold)}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="check">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+    </div>
+    <h1>Dziękujemy!</h1>
+    <p>Odezwiemy się w ciągu kilku godzin.</p>
+    <a href="/" class="back-link">Wróć na stronę</a>
+  </div>
+</body>
+</html>
