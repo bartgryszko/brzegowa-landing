@@ -96,10 +96,12 @@
     .gallery-inner{max-width:1100px;margin:0 auto}
     .gallery-label{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
     .gallery-title{font-family:'Playfair Display',serif;font-size:clamp(24px,3vw,36px);font-weight:600;color:var(--navy);margin-bottom:32px}
-    .gallery-grid{display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:260px 260px;gap:10px}
+    .gallery-grid{display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:repeat(4,260px);gap:10px}
     .gi{overflow:hidden;border-radius:6px;cursor:pointer}
     .gi img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
     .gi:hover img{transform:scale(1.04)}
+    .gi-plan{background:#fff;border:1px solid #e5e7eb}
+    .gi-plan img{object-fit:contain;padding:12px}
 
     /* ===== URGENCY + FINAL CTA ===== */
     .final-cta{background:var(--navy);padding:56px 24px;text-align:center}
@@ -144,7 +146,7 @@
       .benefit{text-align:left;display:flex;align-items:start;gap:16px;padding:20px 0;border-bottom:1px solid #e5e7eb}
       .benefit:last-child{border-bottom:none}
       .benefit-icon{margin:0;flex-shrink:0}
-      .gallery-grid{grid-template-columns:1fr 1fr;grid-template-rows:180px 180px 180px}
+      .gallery-grid{grid-template-columns:1fr 1fr;grid-template-rows:repeat(6,180px)}
       .final-form .form-row{flex-direction:column;gap:14px}
     }
     @media(min-width:769px){
@@ -264,12 +266,18 @@
       <div class="gallery-label">Galeria</div>
       <div class="gallery-title">Zdjęcia nie oddadzą tego w pełni &mdash; zostaw numer, pokażemy na żywo</div>
       <div class="gallery-grid">
-        <div class="gi" onclick="openLightbox(this)"><img src="images/garden.jpg" alt="Dom — ogród" loading="lazy"></div>
-        <div class="gi" onclick="openLightbox(this)"><img src="images/hero.jpg" alt="Dom — widok z przodu" loading="lazy"></div>
-        <div class="gi" onclick="openLightbox(this)"><img src="images/detail.jpg" alt="Detale elewacji" loading="lazy"></div>
-        <div class="gi" onclick="openLightbox(this)"><img src="images/driveway.jpg" alt="Podjazd" loading="lazy"></div>
-        <div class="gi" onclick="openLightbox(this)"><img src="images/entrance.jpg" alt="Wejście" loading="lazy"></div>
-        <div class="gi" onclick="openLightbox(this)"><img src="images/boiler.jpg" alt="Kotłownia — Viessmann, filtry Clack" loading="lazy"></div>
+        <div class="gi" onclick="openLightbox(this)" data-full="images/garden.jpg"><img src="images/thumbs/garden.jpg" alt="Dom — ogród" loading="lazy"></div>
+        <div class="gi" onclick="openLightbox(this)" data-full="images/hero.jpg"><img src="images/thumbs/hero.jpg" alt="Dom — widok z przodu" loading="lazy"></div>
+        <div class="gi" onclick="openLightbox(this)" data-full="images/detail.jpg"><img src="images/thumbs/detail.jpg" alt="Detale elewacji" loading="lazy"></div>
+        <div class="gi" onclick="openLightbox(this)" data-full="images/driveway.jpg"><img src="images/thumbs/driveway.jpg" alt="Podjazd" loading="lazy"></div>
+        <div class="gi" onclick="openLightbox(this)" data-full="images/entrance.jpg"><img src="images/thumbs/entrance.jpg" alt="Wejście" loading="lazy"></div>
+        <div class="gi" onclick="openLightbox(this)" data-full="images/boiler.jpg"><img src="images/thumbs/boiler.jpg" alt="Kotłownia — Viessmann, filtry Clack" loading="lazy"></div>
+        <div class="gi gi-plan" onclick="openLightbox(this)" data-full="images/rzut_parter.jpg"><img src="images/thumbs/rzut_parter.jpg" alt="Rzut parteru" loading="lazy"></div>
+        <div class="gi gi-plan" onclick="openLightbox(this)" data-full="images/rzut_pietro.jpg"><img src="images/thumbs/rzut_pietro.jpg" alt="Rzut piętra" loading="lazy"></div>
+        <div class="gi gi-plan" onclick="openLightbox(this)" data-full="images/rzut_poddasze.jpg"><img src="images/thumbs/rzut_poddasze.jpg" alt="Rzut poddasza" loading="lazy"></div>
+        <div class="gi" onclick="openLightbox(this)" data-full="images/viz1.jpg"><img src="images/thumbs/viz1.jpg" alt="Wizualizacja — widok z ogrodu" loading="lazy"></div>
+        <div class="gi" onclick="openLightbox(this)" data-full="images/viz2.jpg"><img src="images/thumbs/viz2.jpg" alt="Wizualizacja — elewacja frontowa" loading="lazy"></div>
+        <div class="gi" onclick="openLightbox(this)" data-full="images/viz3.jpg"><img src="images/thumbs/viz3.jpg" alt="Wizualizacja — ogród i ścieżka" loading="lazy"></div>
       </div>
     </div>
   </section>
@@ -330,7 +338,7 @@
   <script>
     // Lightbox
     function openLightbox(el){
-      document.getElementById('lightbox-img').src=el.querySelector('img').src;
+      document.getElementById('lightbox-img').src=el.dataset.full||el.querySelector('img').src;
       document.getElementById('lightbox').classList.add('active');
       document.body.style.overflow='hidden';
     }
