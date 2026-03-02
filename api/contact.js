@@ -41,9 +41,11 @@ async function sendCAPI({ name, phone, eventId, fbc, fbp, userAgent, ip, sourceU
       event_time: Math.floor(Date.now() / 1000),
       event_id: eventId,
       action_source: 'website',
-      event_source_url: sourceUrl || 'https://brzegowa.vercel.app',
+      event_source_url: sourceUrl || 'https://jakdlasiebie.com',
       user_data: userData,
     }],
+    // TODO: usunąć po testach
+    test_event_code: 'TEST49240',
   };
 
   try {
