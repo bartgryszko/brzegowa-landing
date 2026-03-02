@@ -96,8 +96,7 @@
     .gallery-inner{max-width:1100px;margin:0 auto}
     .gallery-label{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
     .gallery-title{font-family:'Playfair Display',serif;font-size:clamp(24px,3vw,36px);font-weight:600;color:var(--navy);margin-bottom:32px}
-    .gallery-grid{display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:repeat(3,260px) repeat(3,200px);gap:10px}
-    .gi-wide{grid-column:span 3}
+    .gallery-grid{display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:repeat(4,260px);gap:10px}
     .gi{overflow:hidden;border-radius:6px;cursor:pointer}
     .gi img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
     .gi:hover img{transform:scale(1.04)}
@@ -147,8 +146,7 @@
       .benefit{text-align:left;display:flex;align-items:start;gap:16px;padding:20px 0;border-bottom:1px solid #e5e7eb}
       .benefit:last-child{border-bottom:none}
       .benefit-icon{margin:0;flex-shrink:0}
-      .gallery-grid{grid-template-columns:1fr 1fr;grid-template-rows:repeat(5,180px) repeat(3,140px)}
-      .gi-wide{grid-column:span 2}
+      .gallery-grid{grid-template-columns:1fr 1fr;grid-template-rows:repeat(6,180px)}
       .final-form .form-row{flex-direction:column;gap:14px}
     }
     @media(min-width:769px){
@@ -277,9 +275,9 @@
         <div class="gi gi-plan" onclick="openLightbox(this)" data-full="images/rzut_parter.jpg"><img src="images/thumbs/rzut_parter.jpg" alt="Rzut parteru" loading="lazy"></div>
         <div class="gi gi-plan" onclick="openLightbox(this)" data-full="images/rzut_pietro.jpg"><img src="images/thumbs/rzut_pietro.jpg" alt="Rzut piętra" loading="lazy"></div>
         <div class="gi gi-plan" onclick="openLightbox(this)" data-full="images/rzut_poddasze.jpg"><img src="images/thumbs/rzut_poddasze.jpg" alt="Rzut poddasza" loading="lazy"></div>
-        <div class="gi gi-wide" onclick="openLightbox(this)" data-full="images/viz1.jpg"><img src="images/thumbs/viz1.jpg" alt="Wizualizacja — widok z ogrodu" loading="lazy"></div>
-        <div class="gi gi-wide" onclick="openLightbox(this)" data-full="images/viz2.jpg"><img src="images/thumbs/viz2.jpg" alt="Wizualizacja — elewacja frontowa" loading="lazy"></div>
-        <div class="gi gi-wide" onclick="openLightbox(this)" data-full="images/viz3.jpg"><img src="images/thumbs/viz3.jpg" alt="Wizualizacja — ogród i ścieżka" loading="lazy"></div>
+        <div class="gi" onclick="openLightbox(this)" data-full="images/viz1.jpg"><img src="images/thumbs/viz1.jpg" alt="Wizualizacja — widok z ogrodu" loading="lazy"></div>
+        <div class="gi" onclick="openLightbox(this)" data-full="images/viz2.jpg"><img src="images/thumbs/viz2.jpg" alt="Wizualizacja — elewacja frontowa" loading="lazy"></div>
+        <div class="gi" onclick="openLightbox(this)" data-full="images/viz3.jpg"><img src="images/thumbs/viz3.jpg" alt="Wizualizacja — ogród i ścieżka" loading="lazy"></div>
       </div>
     </div>
   </section>
