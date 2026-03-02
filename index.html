@@ -385,11 +385,14 @@
         if(res.ok){
           sessionStorage.setItem('fb_event_id',eventId);
           window.location.href='/sukces';
-        }else throw new Error();
-      }catch{
+        }else{
+          const err=await res.json().catch(()=>({}));
+          throw new Error(err.error||'');
+        }
+      }catch(ex){
         btn.disabled=false;
         btn.innerHTML='Zostaw telefon<small>Oddzwonimy w kilka godzin</small>';
-        alert('Coś poszło nie tak. Spróbuj ponownie.');
+        alert(ex.message||'Coś poszło nie tak. Spróbuj ponownie.');
       }
     }
   </script>

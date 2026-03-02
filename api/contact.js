@@ -104,7 +104,8 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Imię i telefon są wymagane' });
     }
 
-    if (!/^[\d\s\+\-]{7,15}$/.test(phone.replace(/\s/g, ''))) {
+    const cleanPhone = phone.replace(/[\s\-\(\)]/g, '');
+    if (!/^\+?\d{7,15}$/.test(cleanPhone)) {
       return res.status(400).json({ error: 'Nieprawidłowy numer telefonu' });
     }
 
