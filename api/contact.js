@@ -21,18 +21,22 @@ export default async function handler(req, res) {
   try {
     const { name, phone, timestamp, source, token } = req.body;
 
-    // Turnstile verification
-    if (!token) {
-      return res.status(403).json({ error: 'Brak weryfikacji Turnstile' });
-    }
-    const verifyRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ secret: process.env.TURNSTILE_SECRET_KEY, response: token }),
-    });
-    const verify = await verifyRes.json();
-    if (!verify.success) {
-      return res.status(403).json({ error: 'Weryfikacja Turnstile nie powiodła się' });
+    // Turnstile verification (soft-fail: log but don't block real leads)
+    let turnstileOk = false;
+    try {
+      if (token) {
+        const params = new URLSearchParams({ secret: process.env.TURNSTILE_SECRET_KEY, response: token });
+        const verifyRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: params.toString(),
+        });
+        const verify = await verifyRes.json();
+        turnstileOk = verify.success;
+        if (!verify.success) console.log('Turnstile fail:', JSON.stringify(verify));
+      }
+    } catch (err) {
+      console.error('Turnstile error:', err);
     }
 
     // Walidacja
@@ -78,7 +82,8 @@ export default async function handler(req, res) {
 
     // Telegram Bot — powiadomienie o nowym leadzie
     const date = new Date(lead.timestamp).toLocaleDateString('pl-PL', { day: 'numeric', month: 'long', year: 'numeric' });
-    const tgText = `${date} — nowy lead!\n\n${lead.name}\n${lead.phone}`;
+    const badge = turnstileOk ? '' : ' [!]';
+    const tgText = `${date} — nowy lead${badge}!\n\n${lead.name}\n${lead.phone}`;
     await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
