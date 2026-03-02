@@ -311,7 +311,7 @@
 
   <!-- ===== STICKY MOBILE CTA ===== -->
   <div class="sticky-cta" id="stickyCta">
-    <button onclick="document.getElementById('kontakt').scrollIntoView({behavior:'smooth'})">Zostaw telefon</button>
+    <button onclick="document.getElementById('kontakt').scrollIntoView({behavior:'smooth'});setTimeout(()=>document.querySelector('#contactFormFinal input[name=name]').focus(),500)">Zostaw telefon</button>
   </div>
 
   <!-- ===== LIGHTBOX ===== -->
