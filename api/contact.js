@@ -136,7 +136,7 @@ export default async function handler(req, res) {
     });
 
     // Meta Conversions API — server-side event
-    sendCAPI({
+    await sendCAPI({
       name: lead.name,
       phone: lead.phone,
       eventId: event_id,
