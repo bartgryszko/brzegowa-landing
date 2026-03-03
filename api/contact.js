@@ -3,7 +3,7 @@
 
 import { createHash } from 'crypto';
 
-const PIXEL_ID = '1985636369008402';
+const PIXEL_ID = '856179134049541';
 
 function sha256(value) {
   if (!value) return null;
