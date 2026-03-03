@@ -45,7 +45,7 @@ async function sendCAPI({ name, phone, eventId, fbc, fbp, userAgent, ip, sourceU
       user_data: userData,
     }],
     // TODO: usunąć po testach
-    test_event_code: 'TEST49240',
+    test_event_code: 'TEST65235',
   };
 
   try {
